@@ -1,4 +1,6 @@
 var db, topLayout, myModal;
+var reqCssFiles = [];
+
 
 function initDB(){
    db = new xSQL();

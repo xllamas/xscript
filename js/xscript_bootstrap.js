@@ -640,8 +640,7 @@ function xbNavBar(title,clss,lclss){
    this.cont = new xSection("container-fluid");
    this.header = new xSection("navbar-header");
    this.nav = new xSection("collapse navbar-collapse");
-   this.cont.addElement(this.header)
-            .addElement(this.nav);
+   this.cont.addElement(this.header);
    this.addElement(this.cont);
 
    this.navBtn = new xButton("","navbar-toggle collapsed")
@@ -655,8 +654,8 @@ function xbNavBar(title,clss,lclss){
    this.header.addElement(this.navBtn)
               .addElement(this.navA);
 
-   this.navList = new xList("nav navbar-nav " + (lclss || ""));
-   this.nav.addElement(this.navList);
+   this.navList = new xList("nav navbar-top-links " + (lclss || ""));
+   this.cont.addElement(this.navList);
 }
 
 xbNavBar.prototype = new xSection();
@@ -687,6 +686,10 @@ xbNavBar.prototype.getNavItem = function(index){
 
 xbNavBar.prototype.setTitle = function(title){
    this.navA.node.innerHTML = title;
+}
+
+xbNavBar.prototype.setHamburgerTarget = function(target){
+   this.navBtn.node.dataset.target = target;
 }
 
 /* xbNavBarDropdown */
@@ -959,7 +962,7 @@ xbTheme.prototype.setTheme = function(th){
        link.id = "xbtheme";
        link.type = "text/css";
        link.rel = "stylesheet";
-       link.href = "style/bootstrap_themes/" + th.toLowerCase() + "/bootstrap.min.css";
+       link.href = "/tools/css/bootstrap_themes/" + th.toLowerCase() + "/bootstrap.min.css";
    var head = document.getElementsByTagName("head")[0];
    var plink = document.getElementById("xbtheme");
    if (plink)
@@ -1030,120 +1033,3 @@ function xbSlide(imgsrc,caption,imgclss){
 }
 
 xbSlide.prototype = new xSection();
-
-/* xbSideBar */
-
-function xbSideBar(clss){
-   xSection.call(this,"navbar-default sidebar " + (clss || ""));
-   this.node.setAttribute("role","navigation");
-   this.cont = new xSection("sidebar-nav navbar-collapse");
-   this.addElement(this.cont);
-   this.navList = new xList("nav");
-   this.navList.setId("side-menu");
-   this.cont.addElement(this.navList);
-}
-
-xbSideBar.prototype = new xSection();
-
-xbSideBar.prototype.addItem = function(item){
-   this.navList.addElement(item);
-   $("#side-menu").metisMenu();
-   return this;
-}
-
-xbSideBar.prototype.addDropdown = function(item,dropdown){
-   this.addItem(item);
-   var i = this.navList.elements[this.navList.elements.length - 1];
-   var p = i.node.parentNode;
-   p.appendChild(dropdown.node);
-   $("#side-menu").metisMenu();
-   return this;
-}
-
-function xbSideBarDropdown(clss){
-   xList.call(this,"nav collapse " + (clss || ""));
-}
-
-xbSideBarDropdown.prototype = new xList();
-
-xbSideBarDropdown.prototype.addItem = function(item){
-   this.addElement(item);
-   return this;
-}
-
-/* xbDateTimePicker */
-
-function xbDateTimePicker(label,name,noManual,icon,clss,wclss){
-   xInput.call(this,clss || "form-control","form-group " + (wclss || ""));
-   this.format = "YYYY-MM-DD HH:mm";
-   this.icon = (icon || "fa fa-calendar fa-fw");
-   this.mindate = null;
-   this.iname = name;
-   this.node = document.createElement("div");
-   this.node.id = this.id + "_w";
-   this.node.className = this.wclss;
-   if (noManual){
-      ev = " onkeydown='return false' "
-   }
-   else
-      ev = "";
-   var l = "<label class='control-label' for='" + name + "'>" + label + "</label>";
-   var i = "<div class='input-group' id='" + this.id + "_ig" + "'><input type='text" +
-           "' id='" + this.id +
-           "' name='" + name +
-           "' class='" + this.clss +
-           "'" + ev + "><span class='input-group-addon'><span class='" + this.icon + "'></span></span></div>";
-   this.node.innerHTML = l + i;
-}
-
-xbDateTimePicker.prototype = new xInput();
-
-xbDateTimePicker.prototype.setError = function(e){
-   if (e)
-      this.addWrapperClass("has-error");
-   else
-      this.addWrapperClass("");
-   return this;
-}
-
-xbDateTimePicker.prototype.setMinDate = function(date){
-   this.mindate = date;
-   return this;
-}
-
-xbDateTimePicker.prototype.run = function(){
-   if (this.mindate){
-      $("#" + this.id + "_ig").datetimepicker({
-         format: this.format,
-         locale: "es",
-         minDate: this.mindate
-      });
-   }
-   else{
-      $("#" + this.id + "_ig").datetimepicker({
-         format: this.format,
-         locale: "es"
-      });
-   }
-   return this;
-}
-
-
-/* xbDatePicker */
-
-function xbDatePicker(label,name,noManual,icon,clss,wclss){
-   xbDateTimePicker.call(this,label,name,noManual,icon,clss,wclss);
-   this.format = "YYYY-MM-DD";
-}
-
-xbDatePicker.prototype = new xbDateTimePicker();
-
-
-/* xbTimePicker */
-
-function xbTimePicker(label,name,noManual,icon,clss,wclss){
-   xbDateTimePicker.call(this,label,name,noManual,(icon || "fa fa-clock-o fa-fw"),clss,wclss);
-   this.format = "HH:mm";
-}
-
-xbTimePicker.prototype = new xbDateTimePicker();

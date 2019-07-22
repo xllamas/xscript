@@ -131,7 +131,7 @@ function exit(){
 function showMenu(){
    var nav, dir;
 
-   nav = new xbNavBar("aCelery","navbar-fixed-top","navbar-left");
+   nav = new xbNavBar("aCelery","navbar-fixed-top acelery_navbar","navbar-left");
    dir = new xbNavBarDropdown("Directory");
    dir.addItem(new xbNavBarItem("CRUD Single")
                     .bindFunction(function(){dirMaint("1")}));

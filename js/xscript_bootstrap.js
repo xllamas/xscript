@@ -962,7 +962,7 @@ xbTheme.prototype.setTheme = function(th){
        link.id = "xbtheme";
        link.type = "text/css";
        link.rel = "stylesheet";
-       link.href = "/tools/css/bootstrap_themes/" + th.toLowerCase() + "/bootstrap.min.css";
+       link.href = "style/bootstrap_themes/" + th.toLowerCase() + "/bootstrap.min.css";
    var head = document.getElementsByTagName("head")[0];
    var plink = document.getElementById("xbtheme");
    if (plink)

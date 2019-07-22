@@ -654,7 +654,7 @@ function xbNavBar(title,clss,lclss){
    this.header.addElement(this.navBtn)
               .addElement(this.navA);
 
-   this.navList = new xList("nav navbar-top-links " + (lclss || ""));
+   this.navList = new xList("nav navbar-nav " + (lclss || ""));
    this.cont.addElement(this.navList);
 }
 

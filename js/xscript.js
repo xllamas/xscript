@@ -714,6 +714,53 @@ xCheckBox.prototype.getValue = function(){
    return this.node.getElementsByTagName("input")[0].checked;
 }
 
+/* xRadioBtnGrp */
+
+function xRadioBtnGrp(clss){
+  xSection.call(this,clss);
+}
+
+xRadioBtnGrp.prototype = new xSection();
+
+xRadioBtnGrp.prototype.getChecked = function(){
+  var r = this.node.getElementsByTagName("input");
+  for (var i = 0; i < r.length; i++)
+     if (r[i].checked)
+        return i + 1;
+  return 0;
+}
+
+
+/* xRadioBtn */
+
+function xRadioBtn(label,name,clss,wclss){
+   if (typeof clss == "undefined")
+      clss = "x_radio";
+   xInput.call(this,clss,wclss);
+   this.node = document.createElement("div");
+   this.node.id = this.id + "_w";
+   this.node.className = this.wclss;
+   this.name = name;
+   var i = "<label><input type='radio" +
+           "' id='" + this.id +
+           "' name='" + this.name +
+           "' class='" + this.clss +
+           "'>" + label + "</label>";
+   this.node.innerHTML = i;
+}
+
+xRadioBtn.prototype = new xInput();
+
+xRadioBtn.prototype.setChecked = function(c){
+   this.node.getElementsByTagName("input")[0].checked = c;
+   return this;
+}
+
+xRadioBtn.prototype.getValue = function(){
+   return this.node.getElementsByTagName("input")[0].checked;
+}
+
+
 /* xSelect */
 
 function xSelect(label,sname,clss,wclss){

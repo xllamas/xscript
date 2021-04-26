@@ -11,15 +11,19 @@ function initDB(){
 }
 
 function tabsTest(){
-   var myTabs = new xbTabs();
-   var pane1 = new xbTabPane();
-   var pane2 = new xbTabPane();
-   var pane3 = new xbTabPane();
+   var myTabs = new xbTabs("responsive");
+   var pane1 = new xbTabPane("responsive");
+   var pane2 = new xbTabPane("responsive");
+   var pane3 = new xbTabPane("responsive");
+   var pane4 = new xbTabPane("responsive");
+   var pane5 = new xbTabPane("responsive");
 
    myTabs.addPane("Pane 1", pane1)
          .addPane("Pane 2", pane2)
          .addPane("Pane 3", pane3)
-         .activatePane(1);
+         .addPane("Pane 4", pane4)
+         .addPane("Pane 5", pane5)
+         .activatePane(0);
 
    pane1.addElement(new xbPara("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin et erat et metus auctor cursus. Ut congue facilisis velit sit amet dapibus"));
    pane2.addElement(new xbPara("Nam pellentesque porta odio, eu auctor felis viverra eget. Aenean tortor ligula, ornare quis tristique in, fermentum nec elit. Lorem ipsum dolor sit amet"));
@@ -27,6 +31,7 @@ function tabsTest(){
    if (e = topLayout.getElement(1,0))
       e.remove();
    topLayout.addElement(myTabs,1,0);
+   fakewaffle.responsiveTabs(['xs', 'sm']);
 }
 
 function widgetTest(){
@@ -131,7 +136,7 @@ function exit(){
 function showMenu(){
    var nav, dir;
 
-   nav = new xbNavBar("aCelery","navbar-fixed-top acelery_navbar","navbar-left");
+   nav = new xbNavBar("aCelery","navbar-static-top acelery_navbar","navbar-left");
    dir = new xbNavBarDropdown("Directory");
    dir.addItem(new xbNavBarItem("CRUD Single")
                     .bindFunction(function(){dirMaint("1")}));

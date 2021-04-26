@@ -1,4 +1,4 @@
-/*  Copyright 2014: Xavier Llamas Rolland                      */
+/*  Copyright 2021: Xavier Llamas Rolland                      */
 /*                                                             */
 /*  This software distributed under the GPLv3 License          */
 /*                                                             */
@@ -25,7 +25,7 @@ function xbStringInput(label,name,clss,wclss){
    this.node = document.createElement("div");
    this.node.id = this.id + "_w";
    this.node.className = this.wclss;
-   var l = "<label class='control-label' for='" + name + "'>" + label + "</label>";
+   var l = "<label class='form-label' for='" + name + "'>" + label + "</label>";
    var i = "<input type='text" +
            "' id='" + this.id +
            "' name='" + name +
@@ -106,7 +106,6 @@ function xbFileInput(label,name,clss,wclss){
 
 xbFileInput.prototype = new xbStringInput();
 
-
 /* xbMultiFileInput */
 
 function xbMultiFileInput(label,name,clss,wclss){
@@ -139,7 +138,7 @@ function xbTextAreaInput(label,name,rows,clss,wclss){
    this.node = document.createElement("div");
    this.node.id = this.id + "_w";
    this.node.className = this.wclss;
-   var l = "<label class='control-label' for='" + name + "'>" + label + "</label>";
+   var l = "<label class='form-label' for='" + name + "'>" + label + "</label>";
    var i = "<textarea" +
            " id='" + this.id +
            "' name='" + name +
@@ -206,7 +205,7 @@ function xbCheckBox(label,name,clss,wclss){
    this.node = document.createElement("div");
    this.node.id = this.id + "_w";
    this.node.className = this.wclss;
-   var i = "<div class='" + this.clss + "'><label class='control-label'><input type='checkbox" +
+   var i = "<div class='" + this.clss + "'><label class='form-label'><input type='checkbox" +
            "' id='" + this.id +
            "' name='" + name +
            "'>" + label + "</label></div>";
@@ -233,16 +232,16 @@ xbCheckBox.prototype.setError = function(e){
 
 /* xbRadioBtnGrp */
 
-function xbRadioBtnGrp(clss){
-  xRadioBtnGrp.call(this,clss || "form-group");
+function xbRadioBtnGrp(name,clss){
+  xRadioBtnGrp.call(this,name,clss || "form-group");
 }
 
 xbRadioBtnGrp.prototype = new xRadioBtnGrp();
 
 /* xbRadioBtn */
 
-function xbRadioBtn(label,name,clss){
-   xRadioBtn.call(this,label,name,clss || "radio","radio");
+function xbRadioBtn(label,clss){
+   xRadioBtn.call(this,label,clss || "radio");
 }
 
 xbRadioBtn.prototype = new xRadioBtn();
@@ -256,7 +255,7 @@ function xbSelect(label,sname,clss,wclss){
    this.node = document.createElement("div");
    this.node.id = this.id + "_w";
    this.node.className = this.wclss;
-   var l = "<label class='control-label' for='" + sname + "'>" + label + "</label>";
+   var l = "<label class='form-label' for='" + sname + "'>" + label + "</label>";
    var s = "<select id='" + this.id + "' name='" + sname + "' class='" + this.clss + "'>";
    s += "</select>";
    this.node.innerHTML = l + s;
@@ -452,10 +451,9 @@ xbButtonIcon.prototype = new xButton();
 
 function xbButtonPopOver(label,title,content,clss){
    xbButton.call(this,label,clss);
-   this.node.dataset.container = "body";
-   this.node.dataset.toggle = "popover";
-   this.node.dataset.title = title;
-   this.node.dataset.content = content;
+   this.node.setAttribute("data-bs-toggle","popover");
+   this.node.setAttribute("title",title);
+   this.node.setAttribute("data-bs-content",content);
 }
 
 xbButtonPopOver.prototype = new xbButton();
@@ -463,12 +461,13 @@ xbButtonPopOver.prototype = new xbButton();
 /* xbButtonDropdown */
 
 function xbButtonDropdown(label,icon,clss,wclss,dclss){
-   xSection.call(this,"btn-group " + ("" || wclss));
+   xSection.call(this,"dropdown " + ("" || wclss));
    icon = icon || "caret";
    this.button = new xbButton(label + " <span class='" + icon + "'></span>","dropdown-toggle " + (clss || "btn-default"));
-   this.button.node.dataset.toggle = "dropdown";
+   this.button.node.setAttribute("data-bs-toggle","dropdown");
+   this.button.node.setAttribute("aria-expanded","false");
    this.list = new xList("dropdown-menu " + (dclss || ""));
-   this.list.node.setAttribute("role","menu");
+   this.list.node.setAttribute("aria-labelledby",this.button.node.id);
    this.addElement(this.button)
        .addElement(this.list);
 }
@@ -483,7 +482,7 @@ xbButtonDropdown.prototype.addItem = function(item){
 /* xbButtonDropdownItem */
 
 function xbButtonDropdownItem(label,f,clss){
-   xLink.call(this,label,"#",clss);
+   xLink.call(this,label,"#",clss || "dropdown-item");
    this.bindFunction(f);
 }
 
@@ -631,7 +630,9 @@ xbTabs.prototype.addPane = function(title,pane){
    var li;
    li = document.createElement("li");
    li.id = pane.id + "_li";
-   li.innerHTML = "<a href='#" + pane.id + "' id='" + pane.id + "_a" + "' role='tab' data-toggle='tab'>" + title + "</a>";
+   li.className = 'nav-item';
+   li.setAttribute("role","presentation");
+   li.innerHTML = "<button class='nav-link' id='" + pane.id + "_a" + "' type='button' role='tab' data-bs-toggle='tab' data-bs-target='#" + pane.id + "'>" + title + "</button>";
    this.auxnode.appendChild(li);
    this.addElement(pane);
    return this;
@@ -651,11 +652,11 @@ xbTabs.prototype.removeAuxElement = function(element){
 xbTabs.prototype.activatePane = function(index){
    for (var i = 0; i < this.elements.length; i++){
       if (i == index){
-         this.auxnode.children[i].className = "active";
-         this.elements[i].node.className = this.elements[i].clss + " active";
+         this.auxnode.children[i].children[0].className = "nav-link active";
+         this.elements[i].node.className = this.elements[i].clss + " show active";
       }
       else{
-         this.auxnode.children[i].className = "";
+         this.auxnode.children[i].children[0].className = "nav-link";
          this.elements[i].node.className = this.elements[i].clss;
       }
    }
@@ -670,6 +671,7 @@ xbTabs.prototype.setPaneTitle = function(index,title){
 
 function xbTabPane(clss){
    xSection.call(this,"tab-pane " + (clss || ""));
+   this.node.setAttribute("role","tabpanel");
 }
 
 xbTabPane.prototype = new xSection();
@@ -696,7 +698,7 @@ function xbNavBar(title,clss,lclss){
    this.header.addElement(this.navBtn)
               .addElement(this.navA);
 
-   this.navList = new xList("nav navbar-top-links " + (lclss || ""));
+   this.navList = new xList("nav navbar-nav " + (lclss || ""));
    this.cont.addElement(this.navList);
 }
 
@@ -833,6 +835,7 @@ function xbModal(title,clss,dlg_clss){
               .addElement(this.footer);
   this.setToTop();
   this.setAutoRemove(true);
+  this.closeFn = null;
 }
 
 xbModal.prototype = new xSection();
@@ -872,7 +875,7 @@ xbModal.prototype.hide = function(){
 xbModal.prototype.setAutoRemove = function(autoremove){
   var modal = this;
   if (autoremove)
-     $(this.getHashId()).on("hidden.bs.modal",function(){modal.remove()});
+     $(this.getHashId()).on("hidden.bs.modal",function(){modal.remove() });
   else
      $(this.getHashId()).on("hidden.bs.modal",function(){});
   return this;
@@ -1004,7 +1007,7 @@ xbTheme.prototype.setTheme = function(th){
        link.id = "xbtheme";
        link.type = "text/css";
        link.rel = "stylesheet";
-       link.href = "/tools/css/bootstrap_themes/" + th.toLowerCase() + "/bootstrap.min.css";
+       link.href = "style/bootstrap_themes/" + th.toLowerCase() + "/bootstrap.min.css";
    var head = document.getElementsByTagName("head")[0];
    var plink = document.getElementById("xbtheme");
    if (plink)
